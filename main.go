@@ -3,10 +3,15 @@ package main
 import (
 	// Formatter
 	"fmt"
-	"io"
-	"net/http"
+	"io" //
+	"log"
+	"net/http" //http protocols
+
+	//logger
 	"os" // To create files
 )
+
+var err error
 
 func main() {
 
@@ -15,14 +20,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	url := os.Args[1] //Taking the url to download as input
-	filename := os.Args[2]
+	url := os.Args[1]      //Taking the url to download as input
+	filename := os.Args[2] //Should split out the file name from url and add it here
 	fmt.Println(url)
 
 	err := Download(url, filename)
-
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error downloading due to : %v", err)
 	}
 
 }
@@ -34,21 +38,21 @@ func Download(url string, filename string) error {
 	//create the file
 	out, err := os.Create(filename)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error creating file might be due to : %v", err)
 	}
 	defer out.Close()
 
 	//Download
 	resp, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error while retriving the file form internet: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Writing to file
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Issue with saving the file might be due to : %v", err)
 	}
 	return nil
 }
