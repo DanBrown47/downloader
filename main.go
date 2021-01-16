@@ -6,6 +6,7 @@ import (
 	"io" //
 	"log"
 	"net/http" //http protocols
+	"strings"
 
 	//logger
 	"os" // To create files
@@ -15,14 +16,15 @@ var err error
 
 func main() {
 
-	if len(os.Args) != 3 {
-		fmt.Println("Usage :<url> <filename>")
+	if len(os.Args) != 2 {
+		fmt.Println("Usage :<options> <url> ")
 		os.Exit(1)
 	}
 
-	url := os.Args[1]      //Taking the url to download as input
-	filename := os.Args[2] //Should split out the file name from url and add it here
-	fmt.Println(url)
+	url := os.Args[1] //Taking the url to download
+	urlsplit := strings.Split(url, string('/'))
+	filename := urlsplit[len(urlsplit)-1] //Split out the file name from url
+	fmt.Println(filename)
 
 	err := Download(url, filename)
 	if err != nil {
